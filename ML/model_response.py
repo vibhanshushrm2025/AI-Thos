@@ -12,13 +12,13 @@ You are the operator of a runaway trolley hurtling down a track. Ahead, five wor
 
 def ethical_choice(fw):
     if fw == "d":
-        res = "Prioritize deontological ethics and tell the course of action."
+        res = " Prioritize deontological ethics and tell the course of action."
     elif fw == "u":
-        res = "Prioritize utilitarian ethics and tell the course of action."
+        res = " Prioritize utilitarian ethics and tell the course of action."
     elif fw == "v":
-        res = "Prioritize virtue ethics and tell the course of action."
+        res = " Prioritize virtue ethics and tell the course of action."
     else:
-        res = "Tell the course of action"
+        res = " Tell the course of action."
     
     return res
 
