@@ -11,14 +11,14 @@ class Agent():
         self.client = Together()
         self.model = model
         self.system = system_prompt
-        self.json_op = """ Always respond in JSON as \{"response": model_response\} where model_response is the response from model."""
+        self.op = """ Always respond in JSON as \{"response": model_response\} where model_response is the response from model."""
     
     def invoke(self, prompt):
         response = self.client.chat.completions.create(
             model = self.model,
             messages=[
                 {"role": "system", "content": self.system},
-                {"role": "user", "content": prompt + self.json_op}
+                {"role": "user", "content": prompt + self.op}
             ]
         )
         return json.loads(response.choices[0].message.content.strip())
