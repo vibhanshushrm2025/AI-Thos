@@ -1,11 +1,14 @@
+# Making the necessary imports
 import os
 import json
 from together import Together
 from dotenv import load_dotenv
 
+# Loading environment variables and specifying the model path
 load_dotenv()
 model_path = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
+# Defining AI Agent Class
 class Agent():
     def __init__(self, model, system_prompt):
         self.client = Together()
@@ -36,6 +39,7 @@ class Agent():
         )
         return json.loads(response.choices[0].message.content.strip())
 
+# System prompts for dataset generation agent and object creation
 system_prompt="""You are an AI agent that specializes in Dataset Generation tasked with generating random data for situations that result in ethical dilemmas. Each generated situation must meet the following criteria:
   Situation Description: Provide a unique situation that forces individuals to make difficult decisions involving ethical considerations. The situation should clearly outline the context and the ethical dilemma.
   Decision Options: List at least two decisions that can be made in response to the dilemma.
@@ -45,9 +49,13 @@ system_prompt="""You are an AI agent that specializes in Dataset Generation task
     Virtue Ethics (V): Focuses on character and virtues, asking what a good person would do.
   Generate random data everytime you are called
 """
-
 data_agent = Agent(model= model_path, system_prompt=system_prompt)
 
-prompt = "Generate 15 unique situations. The total number of decisions belonging to each ethical frameworks must be almost equal"
-response = data_agent.invoke(prompt= prompt)["response"]
-print(response)
+def main():
+    prompt = "Generate 15 unique situations. The total number of decisions belonging to each ethical frameworks must be almost equal"
+    response = data_agent.invoke(prompt= prompt)["response"]
+    print(response)
+
+# Calling main function
+if __name__ == "__main__":
+    main()

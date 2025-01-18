@@ -1,11 +1,14 @@
+# Making the necessary imports
 from dotenv import load_dotenv
 from together import Together
 import os
 import json
 
+# Loading environment variables and specifying the model path
 load_dotenv()
 model_path = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
+# Defining AI Agent Class
 class Agent():
     def __init__(self, model, system_prompt):
         self.client = Together()
@@ -23,11 +26,13 @@ class Agent():
         )
         return json.loads(response.choices[0].message.content.strip())
 
+# System prompts for different agents
 utilitarian_system = "You are an AI agent that prioritizes utilitarian ethics and tells the course of action for a given situtation."
 deontological_system = "You are an AI agent that prioritizes deontological ethics and tells the course of action for a given situtation."
 virtue_system = "You are an AI agent that prioritizes virtue ethics and tells the course of action for a given situtation."
 default_system = "You are an AI agent that is similar to a human who prioritzes themselves over others and the societal good and tells the course of action for a given situation."
 
+# Agent Creation
 utilitarian_agent = Agent(model=model_path, system_prompt=utilitarian_system)
 deontological_agent = Agent(model=model_path, system_prompt=deontological_system)
 virtue_agent = Agent(model=model_path, system_prompt=virtue_system)
@@ -35,9 +40,11 @@ custom_agent = Agent(model=model_path, system_prompt=default_system)
 default_agent = Agent(model=model_path, system_prompt=default_system)
 
 def main():
+    # Taking input from the user and choosing the psychological framework
     prompt = input("Enter the prompt describing the moral dilemma:\n")
     framework = input("Enter the psychological framework: 'u' -> Utilitarianism, 'd' -> Deontology, 'v' -> Virtue, 'a' -> All of the above and press enter for skipping this step\n")
 
+    # Taking response from AI Agents
     response_dict = {}
     if framework == 'u':
         response_dict["prompt"] = prompt
@@ -65,11 +72,13 @@ def main():
 
     print(f"{response_dict['response']}\n")
 
+    # Saving results in JSON
     json_file = "response.json"
     with open(json_file, "w") as outfile: 
         json.dump(response_dict, outfile)
 
     print(f"Response saved in {json_file}")
 
+# Calling main function
 if __name__ == "__main__":
     main()

@@ -1,11 +1,14 @@
+# Making the necessary imports
 from dotenv import load_dotenv
 from together import Together
 import os
 import json
 
+# Loading environment variables and specifying the model path
 load_dotenv()
 model_path = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
+# Defining AI Agent Class
 class Agent():
     def __init__(self, model, system_prompt):
         self.client = Together()
@@ -23,7 +26,8 @@ class Agent():
         )
         return json.loads(response.choices[0].message.content.strip())
     
-analysis_system = "You are an AI agent that provides an analysis for a used based on the scores obtained in utilitarian ethics, deontological ethics, and virtue ethics."
+# System prompts for analysis agent and object creation
+analysis_system = "You are an AI agent that provides an analysis of a user for a used based on the scores obtained in utilitarian ethics, deontological ethics, and virtue ethics."
 analysis_agent = Agent(model=model_path, system_prompt=analysis_system)
 
 def main():
@@ -33,5 +37,6 @@ def main():
     response_dict["response"] = analysis_agent.invoke(prompt=prompt)["response"]
     print(f"{response_dict['response']}\n")
 
+# Calling main function
 if __name__ == "__main__":
     main()
