@@ -4,34 +4,59 @@ import os
 import json
 
 load_dotenv()
-client = Together()
+model_path = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
-prompt = """
-You are the operator of a runaway trolley hurtling down a track. Ahead, five workers are tied to the track and unable to move. If you do nothing, the trolley will kill all five workers. However, you notice a lever that can divert the trolley onto a different track. On this second track, there is one worker tied down who would be killed instead.
-"""
-
-def ethical_choice(fw):
-    if fw == "d":
-        res = " Prioritize deontological ethics and tell the course of action."
-    elif fw == "u":
-        res = " Prioritize utilitarian ethics and tell the course of action."
-    elif fw == "v":
-        res = " Prioritize virtue ethics and tell the course of action."
-    else:
-        res = " Tell the course of action."
+class Agent():
+    def __init__(self, model, system_prompt):
+        self.client = Together()
+        self.model = model
+        self.system = system_prompt
+        self.json_op = """ Always respond in JSON as \{"response": model_response\} where model_response is the response from model"""
     
-    return res
+    def invoke(self, prompt):
+        response = self.client.chat.completions.create(
+            model = self.model,
+            messages=[
+                {"role": "system", "content": self.system},
+                {"role": "user", "content": prompt + self.json_op}
+            ]
+        )
+        return json.loads(response.choices[0].message.content.strip())
 
-response = client.chat.completions.create(
-    model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-    messages=[{"role": "user", "content": prompt + ethical_choice("d") + """ Always respond in JSON as \{"response": model_response\} where model_response is the response from model"""}],
-)
+utilitarian_system = "You are an AI agent that prioritizes utilitarian ethics and tells the course of action for a given situtation."
+deontological_system = "You are an AI agent that prioritizes deontological ethics and tells the course of action for a given situtation."
+virtue_system = "You are an AI agent that prioritizes virtue ethics and tells the course of action for a given situtation."
+default_system = "You are an AI agent that tells the course of action for a given situation which generally mimics a human behaviour and their inherent biases."
 
-dic  = json.loads(response.choices[0].message.content.strip())
-dic["prompt"] = prompt
+utilitarian_agent = Agent(model=model_path, system_prompt=utilitarian_system)
+deontological_agent = Agent(model=model_path, system_prompt=deontological_system)
+virtue_agent = Agent(model=model_path, system_prompt=virtue_system)
+default_agent = Agent(model=model_path, system_prompt=default_system)
 
-json_file = "response.json"
-with open(json_file, "w") as outfile: 
-    json.dump(dic, outfile)
+def main():
+    prompt = input("Enter the prompt describing the moral dilemma:\n")
+    framework = input("Enter the psychological framework: 'u' for Utilitarianism, 'd' for Deontological, 'v' for Virtue, and press enter for skipping this step\n")
 
-print(f"Response saved in {json_file}")
+    if framework == 'u':
+        response_dict = utilitarian_agent.invoke(prompt=prompt)
+        response_dict["prompt"] = prompt
+    elif framework == 'd':
+        response_dict = deontological_agent.invoke(prompt=prompt)
+        response_dict["prompt"] = prompt
+    elif framework == 'v':
+        response_dict = virtue_agent.invoke(prompt=prompt)
+        response_dict["prompt"] = prompt
+    else:
+        response_dict = default_agent.invoke(prompt=prompt)
+        response_dict["prompt"] = prompt
+
+    print(f"{response_dict['response']}\n")
+    
+    json_file = "response.json"
+    with open(json_file, "w") as outfile: 
+        json.dump(response_dict, outfile)
+
+    print(f"Response saved in {json_file}")
+
+if __name__ == "__main__":
+    main()
