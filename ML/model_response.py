@@ -6,12 +6,32 @@ import json
 load_dotenv()
 client = Together()
 
+prompt = """
+You are the operator of a runaway trolley hurtling down a track. Ahead, five workers are tied to the track and unable to move. If you do nothing, the trolley will kill all five workers. However, you notice a lever that can divert the trolley onto a different track. On this second track, there is one worker tied down who would be killed instead.
+"""
+
+def ethical_choice(fw):
+    if fw == "d":
+        res = "Prioritize deontological ethics and tell the course of action."
+    elif fw == "u":
+        res = "Prioritize utilitarian ethics and tell the course of action."
+    elif fw == "v":
+        res = "Prioritize virtue ethics and tell the course of action."
+    else:
+        res = "Tell the course of action"
+    
+    return res
+
 response = client.chat.completions.create(
     model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-    messages=[{"role": "user", "content": "What are some fun things to do in New York? Always respond in JSON."}],
+    messages=[{"role": "user", "content": prompt + ethical_choice("d") + """ Always respond in JSON as \{"response": model_response\} where model_response is the response from model"""}],
 )
 
-json_start = response.find("{")
-json_end = response.rfind("}") + 1
-json_data = json.loads(response_text[json_start:json_end])
-print(json.loads(response.choices[0].message.content))
+dic  = json.loads(response.choices[0].message.content.strip())
+dic["prompt"] = prompt
+
+json_file = "response.json"
+with open(json_file, "w") as outfile: 
+    json.dump(dic, outfile)
+
+print(f"Response saved in {json_file}")
