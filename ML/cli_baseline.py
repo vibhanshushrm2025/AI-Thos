@@ -31,6 +31,7 @@ default_system = "You are an AI agent that is similar to a human who prioritzes 
 utilitarian_agent = Agent(model=model_path, system_prompt=utilitarian_system)
 deontological_agent = Agent(model=model_path, system_prompt=deontological_system)
 virtue_agent = Agent(model=model_path, system_prompt=virtue_system)
+custom_agent = Agent(model=model_path, system_prompt=default_system)
 default_agent = Agent(model=model_path, system_prompt=default_system)
 
 def main():
@@ -53,6 +54,11 @@ def main():
         "\nDeontology: " + deontological_agent.invoke(prompt=prompt)["response"] + \
         "\nVirtue: " + virtue_agent.invoke(prompt=prompt)["response"] + \
         "\nDefault: " + default_agent.invoke(prompt=prompt)["response"]
+    elif framework == 'c':
+        user_bias = input("\nEnter the required traits or parameters of the morailty:\n")
+        response_dict["prompt"] = prompt
+        custom_agent.system = f"You are an AI agent that is similar to a human with the following bias: {user_bias}."
+        response_dict["response"] = custom_agent.invoke(prompt=prompt)["response"]
     else:
         response_dict = default_agent.invoke(prompt=prompt)
         response_dict["prompt"] = prompt
