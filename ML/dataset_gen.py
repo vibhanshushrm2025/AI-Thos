@@ -46,7 +46,7 @@ system_prompt="""You are an AI agent that specializes in Dataset Generation task
   Generate random data everytime you are called
 """
 
-data_agent= Agent(model= model_path, system_prompt=system_prompt)
+data_agent = Agent(model= model_path, system_prompt=system_prompt)
 
 prompt = "Generate 15 unique situations. The total number of decisions belonging to each ethical frameworks must be almost equal"
 response = data_agent.invoke(prompt= prompt)["response"]
