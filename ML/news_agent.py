@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Loading environment variables and specifying the model path
 load_dotenv()
-newsapi = NewsApiClient(api_key=os.getenv("NEWS_API_KEY"))
+newsapi_client= NewsApiClient(api_key=os.getenv("NEWS_API_KEY"))
 model_path = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
 # Defining AI Agent Class
@@ -45,7 +45,7 @@ def main():
     num_feed=2
     response_list = []
     for keyword in keywords:
-        top = newsapi.get_everything(q=keyword,from_param=date_before_a_week,to=current_date,language='en')
+        top = newsapi_client.get_everything(q=keyword,from_param=date_before_a_week,to=current_date,language='en')
         for i in range(num_feed):
             response_dict = {}
             response_dict["title"] = top['articles'][i]['title']
