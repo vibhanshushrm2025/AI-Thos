@@ -1,10 +1,11 @@
+# Making the necessary imports
 import os
-import json
 from together import Together
 from newsapi import NewsApiClient
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
+# Loading environment variables and specifying the model path
 load_dotenv()
 newsapi = NewsApiClient(api_key=os.getenv("NEWS_API_KEY"))
 model_path = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
@@ -30,13 +31,16 @@ class Agent():
         )
         return response.choices[0].message.content.strip()
 
+# System prompts for news agent and object creation
 news_system = "You are an AI agent that reads the news title and content and simulate outcomes which are ethically correct on a larger scale and suggest corrective measures."
 news_agent = Agent(model=model_path, system_prompt=news_system)
 
 def main():
+    # Recent news
     current_date = datetime.now().date()
     date_before_a_week = current_date - timedelta(days=7)
     
+    # Essential keywords
     keywords = ["Murder", "Terrorist", "Robbery"]
     num_feed=2
     response_list = []
@@ -53,5 +57,6 @@ def main():
     
     print(response_list)
 
+# Calling main function
 if __name__ == "__main__":
     main()

@@ -1,3 +1,4 @@
+newsapi_python==0.2.7
 numpy==1.24.4
 pandas==1.5.3
 python-dotenv==1.0.1
