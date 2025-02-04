@@ -1,7 +1,7 @@
 # AI-Thos
-AI-Thos is an Agentic Moral Engine powered by LLAMA 3.3 which can analyze ethical dilemmas and scenario and suggest ethical outcomes for them based on different moral frameworks.\
+AI-Thos is an Agentic Moral Engine powered by LLAMA 3.3 which can analyze ethical dilemmas and scenario and suggest ethical outcomes for them based on different moral frameworks.
 
-We have used AI Agents with an LLM as the backbone for the creation of the following entities as an agent:\
+We have used AI Agents with an LLM as the backbone for the creation of the following entities as an agent:
 
 - Utilitarian Ethics Philosopher
 - Deontological Ethics Philosopher
